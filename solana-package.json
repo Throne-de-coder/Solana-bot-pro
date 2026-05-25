@@ -1,0 +1,72 @@
+{
+  "name": "solanabot-pro",
+  "version": "2.0.0",
+  "description": "Professional AI-Powered Solana Meme Coin Trading Bot with Twitter & Magic Eden Integration",
+  "main": "solana-bot-engine.js",
+  "type": "module",
+  "scripts": {
+    "start": "node solana-bot-engine.js",
+    "dev": "nodemon solana-bot-engine.js",
+    "test": "jest --coverage",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "db:migrate": "db-migrate up",
+    "logs": "tail -f logs/bot.log",
+    "dashboard": "serve solana-trading-bot-dashboard.jsx",
+    "docker:build": "docker build -t solanabot-pro .",
+    "docker:run": "docker-compose up -d",
+    "docker:stop": "docker-compose down",
+    "backup:db": "mongodump --uri=$MONGODB_URI --out=./backups/$(date +%Y%m%d_%H%M%S)",
+    "deploy:vercel": "vercel --prod",
+    "deploy:railway": "railway up"
+  },
+  "keywords": [
+    "solana",
+    "crypto",
+    "trading",
+    "meme-coins",
+    "bot",
+    "automation",
+    "twitter",
+    "magic-eden",
+    "raydium",
+    "blockchain"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "@jup-ag/api": "^6.0.0",
+    "@solana/web3.js": "^1.95.0",
+    "@solana/spl-token": "^0.3.10",
+    "@solana/spl-token-metadata": "^0.3.10",
+    "axios": "^1.6.0",
+    "bull": "^4.11.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-cors": "^1.4.1",
+    "mongoose": "^7.4.0",
+    "redis": "^4.6.7",
+    "twitter-api-v2": "^1.15.0",
+    "winston": "^3.10.0",
+    "pino": "^8.15.1",
+    "pino-pretty": "^10.2.3",
+    "bs58": "^5.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "eslint": "^8.49.0",
+    "prettier": "^3.0.3",
+    "@types/node": "^20.6.0",
+    "dotenv-cli": "^7.3.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/solanabot-pro.git"
+  }
+}

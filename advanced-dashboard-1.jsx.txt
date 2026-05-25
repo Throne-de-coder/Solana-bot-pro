@@ -1,0 +1,635 @@
+import React, { useState, useEffect } from 'react';
+import { TrendingUp, AlertCircle, Settings, Play, Pause, RefreshCw, Activity, DollarSign, Target, StopCircle, Zap, Wallet, Radio, Brain, Copy, Crosshair, TrendingDown, Users, BarChart3, Bell, Lock } from 'lucide-react';
+
+export default function AdvancedSolanaBotDashboard() {
+  const [botStatus, setBotStatus] = useState('idle');
+  const [activeTab, setActiveTab] = useState('trading'); // trading, ai, copy, whales, sniper, trailing
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [solBalance, setSolBalance] = useState(15.5);
+
+  // Trading State
+  const [activeTrades, setActiveTrades] = useState([
+    { id: 1, token: 'BONK', entry: 0.000012, current: 0.000016, pnl: 33.3, tp: 0.00006, sl: 0.0000096, trailingStop: 0.000015, chain: 'Solana' }
+  ]);
+
+  // AI Sentiment State
+  const [sentimentAnalysis, setSentimentAnalysis] = useState({
+    overall: 72,
+    twitter: 85,
+    blockchain: 68,
+    news: 75,
+    trends: ['pumping', 'whale_buying', 'viral'],
+    recommendations: [
+      { token: 'WIF', score: 94, reason: 'High social volume + whale accumulation', risk: 'medium' },
+      { token: 'POPCAT', score: 89, reason: 'Trending on Twitter, positive sentiment', risk: 'high' }
+    ]
+  });
+
+  // Copy Trading State
+  const [copyTrading, setCopyTrading] = useState({
+    enabled: false,
+    traders: [
+      { id: 1, name: 'GigaChadTrader', winRate: 87, totalTrades: 156, followers: 1240, copyPercentage: 50, status: 'active' },
+      { id: 2, name: 'SolanaWhale', winRate: 79, totalTrades: 234, followers: 3450, copyPercentage: 30, status: 'active' }
+    ],
+    selectedTraders: [1, 2]
+  });
+
+  // Whale Tracking State
+  const [whaleTracking, setWhaleTracking] = useState({
+    enabled: true,
+    whales: [
+      { id: 1, wallet: '7xKX...', balance: 15420000, tokens: 45, lastActivity: '2m ago', trend: 'accumulating', topHolding: 'BONK', notification: true },
+      { id: 2, wallet: '9mLY...', balance: 8750000, tokens: 32, lastActivity: '5m ago', trend: 'distributing', topHolding: 'WIF', notification: true }
+    ],
+    alerts: [
+      { id: 1, wallet: '7xKX...', action: 'Large BONK purchase', amount: '$250K', token: 'BONK', time: '2m ago', impact: 'bullish' },
+      { id: 2, wallet: '9mLY...', action: 'WIF accumulation', amount: '$180K', token: 'WIF', time: '4m ago', impact: 'bullish' }
+    ]
+  });
+
+  // Sniper Detection State
+  const [sniperDetection, setSniperDetection] = useState({
+    enabled: true,
+    detections: [
+      { id: 1, txHash: 'abc123...', sniper: 'SniperBot_v2', victim: 'NewToken', profit: '$4250', timestamp: '30s ago', severity: 'critical' },
+      { id: 2, txHash: 'def456...', sniper: 'FastBot', victim: 'MemeToken', profit: '$1850', timestamp: '2m ago', severity: 'high' }
+    ],
+    settings: {
+      minProfit: 1000,
+      maxSlippage: 0.5,
+      blockSnipedTokens: true
+    }
+  });
+
+  // Trailing Stop Loss State
+  const [trailingStopLoss, setTrailingStopLoss] = useState({
+    enabled: true,
+    percentage: 5,
+    activeTrades: [
+      { token: 'BONK', price: 0.000016, trailingStop: 0.000015, peakPrice: 0.000018, gain: '+50%' },
+      { token: 'COPE', price: 0.0000945, trailingStop: 0.0000897, peakPrice: 0.000105, gain: '+85%' }
+    ]
+  });
+
+  // Multi-Wallet State
+  const [multiWallet, setMultiWallet] = useState({
+    wallets: [
+      { id: 1, name: 'Main Trading', address: '7xKX...', balance: 15.5, trades: 24, status: 'active', allocation: 40 },
+      { id: 2, name: 'Growth Account', address: '9mLY...', balance: 8.3, trades: 12, status: 'active', allocation: 30 },
+      { id: 3, name: 'Risk Account', address: '3pQR...', balance: 5.2, trades: 8, status: 'active', allocation: 20 },
+      { id: 4, name: 'Backup Wallet', address: '2nWZ...', balance: 2.1, trades: 3, status: 'inactive', allocation: 10 }
+    ],
+    selectedWallet: 1
+  });
+
+  const toggleBot = () => {
+    if (!walletConnected) {
+      alert('Please connect your wallet first');
+      return;
+    }
+    setBotStatus(botStatus === 'running' ? 'paused' : 'running');
+  };
+
+  const connectWallet = () => {
+    setWalletConnected(true);
+    alert('✅ Wallet Connected!');
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950 text-white font-sans">
+      {/* Animated Background */}
+      <div className="fixed inset-0 opacity-10">
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'linear-gradient(0deg, transparent 24%, rgba(139, 92, 246, 0.1) 25%, rgba(139, 92, 246, 0.1) 26%, transparent 27%, transparent 74%, rgba(139, 92, 246, 0.1) 75%, rgba(139, 92, 246, 0.1) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(139, 92, 246, 0.1) 25%, rgba(139, 92, 246, 0.1) 26%, transparent 27%, transparent 74%, rgba(139, 92, 246, 0.1) 75%, rgba(139, 92, 246, 0.1) 76%, transparent 77%, transparent)',
+          backgroundSize: '50px 50px'
+        }} />
+      </div>
+
+      <div className="relative z-10">
+        {/* Header */}
+        <header className="border-b border-purple-500/30 bg-slate-950/80 backdrop-blur-xl sticky top-0">
+          <div className="max-w-7xl mx-auto px-6 py-5">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-gradient-to-br from-purple-400 via-pink-400 to-purple-600 rounded-xl shadow-lg shadow-purple-500/50">
+                  <TrendingUp className="w-7 h-7 text-white" strokeWidth={2.5} />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-purple-300 bg-clip-text text-transparent">
+                    SolanaBot Pro X
+                  </h1>
+                  <p className="text-xs text-purple-300/70">Advanced Trading with AI & Whale Tracking</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <button className="p-2 hover:bg-purple-900/30 rounded-lg transition relative">
+                  <Bell className="w-5 h-5 text-purple-300" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                </button>
+                
+                {!walletConnected ? (
+                  <button onClick={connectWallet} className="px-6 py-2 rounded-lg font-semibold flex items-center gap-2 bg-purple-600/30 border border-purple-500/50 text-purple-300 hover:bg-purple-600/50">
+                    <Wallet className="w-4 h-4" />
+                    Connect Wallet
+                  </button>
+                ) : (
+                  <button onClick={toggleBot} className={`px-6 py-2 rounded-lg font-semibold flex items-center gap-2 ${botStatus === 'running' ? 'bg-red-500/20 border border-red-500/50 text-red-300 hover:bg-red-500/30' : 'bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 hover:bg-emerald-500/30'}`}>
+                    {botStatus === 'running' ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    {botStatus === 'running' ? 'Stop Bot' : 'Start Bot'}
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Status Bar */}
+            <div className="flex items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <div className={`w-3 h-3 rounded-full ${botStatus === 'running' ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'}`} />
+                <span className="text-slate-400">Status: <span className={botStatus === 'running' ? 'text-emerald-400 font-semibold' : 'text-slate-400'}>{botStatus === 'running' ? '🟢 LIVE' : '⚪ IDLE'}</span></span>
+              </div>
+              {walletConnected && (
+                <div className="flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-cyan-400" />
+                  <span className="text-slate-400">Balance: <span className="text-cyan-300 font-semibold">{solBalance} SOL</span></span>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Stats Overview */}
+        <section className="bg-gradient-to-b from-purple-900/20 to-transparent border-b border-purple-500/10 px-6 py-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-6">
+              {[
+                { label: 'P&L', value: '+$4,235', icon: DollarSign, color: 'from-emerald-400 to-green-500' },
+                { label: 'Win Rate', value: '82%', icon: Target, color: 'from-purple-400 to-pink-500' },
+                { label: 'Trades', value: '42', icon: Activity, color: 'from-cyan-400 to-blue-500' },
+                { label: 'AI Score', value: '87/100', icon: Brain, color: 'from-yellow-400 to-orange-500' },
+                { label: 'Whales Track', value: '24', icon: Users, color: 'from-pink-400 to-red-500' },
+                { label: 'Copy Traders', value: '2', icon: Copy, color: 'from-green-400 to-emerald-500' }
+              ].map((stat, idx) => (
+                <div key={idx} className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-3 hover:border-purple-500/50 transition backdrop-blur">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-300/70 text-xs">{stat.label}</p>
+                      <p className="text-lg font-bold mt-1 bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">{stat.value}</p>
+                    </div>
+                    <div className={`p-2 bg-gradient-to-br ${stat.color} rounded-lg`}>
+                      <stat.icon className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Tab Navigation */}
+        <div className="border-b border-purple-500/20 bg-slate-950/50 backdrop-blur sticky top-20">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex gap-1 overflow-x-auto">
+              {[
+                { id: 'trading', label: '📈 Trading', icon: TrendingUp },
+                { id: 'ai', label: '🧠 AI Sentiment', icon: Brain },
+                { id: 'copy', label: '📋 Copy Trading', icon: Copy },
+                { id: 'whales', label: '🐋 Whale Tracking', icon: Users },
+                { id: 'sniper', label: '🎯 Sniper Detection', icon: Crosshair },
+                { id: 'trailing', label: '📉 Trailing SL', icon: TrendingDown },
+                { id: 'wallet', label: '👛 Multi-Wallet', icon: Wallet }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-3 whitespace-nowrap border-b-2 transition text-sm font-semibold ${
+                    activeTab === tab.id
+                      ? 'border-purple-500 text-purple-300'
+                      : 'border-transparent text-purple-300/60 hover:text-purple-300'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          {/* AI SENTIMENT ANALYSIS */}
+          {activeTab === 'ai' && (
+            <div className="space-y-6">
+              <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-6">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <Brain className="w-6 h-6 text-yellow-400" />
+                  AI Sentiment Analysis
+                </h2>
+
+                {/* Overall Score */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                  {[
+                    { label: 'Overall Sentiment', value: sentimentAnalysis.overall, color: 'bg-purple-500' },
+                    { label: 'Twitter Buzz', value: sentimentAnalysis.twitter, color: 'bg-blue-500' },
+                    { label: 'Blockchain Activity', value: sentimentAnalysis.blockchain, color: 'bg-green-500' },
+                    { label: 'News Sentiment', value: sentimentAnalysis.news, color: 'bg-orange-500' }
+                  ].map((score, idx) => (
+                    <div key={idx} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                      <p className="text-purple-300/70 text-sm mb-2">{score.label}</p>
+                      <div className="relative h-8 bg-slate-800 rounded-full overflow-hidden">
+                        <div className={`h-full ${score.color} transition-all duration-500`} style={{ width: `${score.value}%` }} />
+                        <span className="absolute inset-0 flex items-center justify-center text-white font-bold text-sm">{score.value}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Trending Indicators */}
+                <div className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20 mb-6">
+                  <h3 className="font-bold mb-3 text-purple-300">🔥 Trending Signals</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {sentimentAnalysis.trends.map((trend, idx) => (
+                      <span key={idx} className="px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-sm border border-emerald-500/30">
+                        #{trend.replace('_', ' ')}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* AI Recommendations */}
+                <div className="space-y-3">
+                  <h3 className="font-bold text-purple-300">🤖 AI Recommendations</h3>
+                  {sentimentAnalysis.recommendations.map(rec => (
+                    <div key={rec.token} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <h4 className="font-bold text-purple-300">${rec.token}</h4>
+                          <p className="text-sm text-purple-300/60">{rec.reason}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xl font-bold text-emerald-400">{rec.score}</div>
+                          <span className={`text-xs px-2 py-1 rounded ${rec.risk === 'medium' ? 'bg-yellow-500/20 text-yellow-300' : 'bg-red-500/20 text-red-300'}`}>{rec.risk} risk</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* COPY TRADING */}
+          {activeTab === 'copy' && (
+            <div className="space-y-6">
+              <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Copy className="w-6 h-6 text-cyan-400" />
+                    Copy Trading
+                  </h2>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={copyTrading.enabled} onChange={(e) => setCopyTrading({...copyTrading, enabled: e.target.checked})} className="w-4 h-4" />
+                    <span className="text-sm text-purple-300">Enable Copy Trading</span>
+                  </label>
+                </div>
+
+                <div className="space-y-4">
+                  {copyTrading.traders.map(trader => (
+                    <div key={trader.id} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-bold text-purple-300">{trader.name}</h3>
+                          <p className="text-xs text-purple-300/60">{trader.followers.toLocaleString()} followers</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-emerald-400">{trader.winRate}%</div>
+                          <p className="text-xs text-purple-300/60">Win Rate</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 mb-3">
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Trades</p>
+                          <p className="font-bold text-purple-300">{trader.totalTrades}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Copy %</p>
+                          <p className="font-bold text-purple-300">{trader.copyPercentage}%</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Status</p>
+                          <p className="font-bold text-emerald-400">{trader.status}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button className="flex-1 bg-purple-600/30 hover:bg-purple-600/50 px-3 py-2 rounded text-sm font-semibold text-purple-300 transition">
+                          {copyTrading.selectedTraders.includes(trader.id) ? '✓ Copying' : 'Start Copying'}
+                        </button>
+                        <button className="px-3 py-2 rounded text-sm font-semibold text-purple-300 border border-purple-600/30 hover:border-purple-500/50 transition">
+                          Settings
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* WHALE TRACKING */}
+          {activeTab === 'whales' && (
+            <div className="space-y-6">
+              <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Users className="w-6 h-6 text-pink-400" />
+                    Whale Tracking
+                  </h2>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={whaleTracking.enabled} onChange={(e) => setWhaleTracking({...whaleTracking, enabled: e.target.checked})} className="w-4 h-4" />
+                    <span className="text-sm text-purple-300">Tracking Enabled</span>
+                  </label>
+                </div>
+
+                {/* Whale Alerts */}
+                <div className="mb-8">
+                  <h3 className="font-bold text-purple-300 mb-4">🚨 Recent Whale Activity</h3>
+                  <div className="space-y-3">
+                    {whaleTracking.alerts.map(alert => (
+                      <div key={alert.id} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <h4 className="font-bold text-purple-300">{alert.action}</h4>
+                            <p className="text-sm text-purple-300/60">{alert.wallet} • {alert.time}</p>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-lg font-bold text-cyan-400">{alert.amount}</div>
+                            <span className={`text-xs px-2 py-1 rounded ${alert.impact === 'bullish' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}`}>{alert.impact}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tracked Whales */}
+                <div>
+                  <h3 className="font-bold text-purple-300 mb-4">👑 Top Whales</h3>
+                  <div className="space-y-3">
+                    {whaleTracking.whales.map(whale => (
+                      <div key={whale.id} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h4 className="font-bold text-purple-300">{whale.wallet}</h4>
+                            <p className="text-xs text-purple-300/60">Balance: ${(whale.balance / 1000000).toFixed(1)}M • {whale.tokens} tokens</p>
+                          </div>
+                          <div className="text-right">
+                            <span className={`text-xs px-2 py-1 rounded ${whale.trend === 'accumulating' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-red-500/20 text-red-300'}`}>
+                              {whale.trend}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-slate-800/50 rounded p-2">
+                            <p className="text-xs text-purple-300/60">Top Holding</p>
+                            <p className="font-bold text-purple-300">{whale.topHolding}</p>
+                          </div>
+                          <div className="bg-slate-800/50 rounded p-2">
+                            <p className="text-xs text-purple-300/60">Last Activity</p>
+                            <p className="font-bold text-purple-300">{whale.lastActivity}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SNIPER DETECTION */}
+          {activeTab === 'sniper' && (
+            <div className="space-y-6">
+              <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <Crosshair className="w-6 h-6 text-red-400" />
+                    Sniper Detection
+                  </h2>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" checked={sniperDetection.enabled} onChange={(e) => setSniperDetection({...sniperDetection, enabled: e.target.checked})} className="w-4 h-4" />
+                    <span className="text-sm text-purple-300">Block Sniped Tokens</span>
+                  </label>
+                </div>
+
+                {/* Settings */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                  {[
+                    { label: 'Min Profit Threshold', value: `$${sniperDetection.settings.minProfit}` },
+                    { label: 'Max Slippage Alert', value: `${sniperDetection.settings.maxSlippage}%` },
+                    { label: 'Auto-Block Tokens', value: sniperDetection.settings.blockSnipedTokens ? 'ON' : 'OFF' }
+                  ].map((setting, idx) => (
+                    <div key={idx} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                      <p className="text-sm text-purple-300/60 mb-2">{setting.label}</p>
+                      <p className="text-lg font-bold text-purple-300">{setting.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Detected Snipers */}
+                <h3 className="font-bold text-purple-300 mb-4">⚠️ Detected Snipers</h3>
+                <div className="space-y-3">
+                  {sniperDetection.detections.map(detection => (
+                    <div key={detection.id} className="bg-slate-900/50 rounded-lg p-4 border border-red-600/20">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h4 className="font-bold text-red-400">{detection.sniper}</h4>
+                          <p className="text-xs text-purple-300/60">{detection.txHash} • {detection.timestamp}</p>
+                        </div>
+                        <span className={`text-xs px-2 py-1 rounded ${detection.severity === 'critical' ? 'bg-red-500/30 text-red-300' : 'bg-orange-500/30 text-orange-300'}`}>
+                          {detection.severity}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Token</p>
+                          <p className="font-bold text-purple-300">{detection.victim}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Profit</p>
+                          <p className="font-bold text-red-400">{detection.profit}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TRAILING STOP LOSS */}
+          {activeTab === 'trailing' && (
+            <div className="space-y-6">
+              <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <TrendingDown className="w-6 h-6 text-orange-400" />
+                    Trailing Stop Loss
+                  </h2>
+                  <div className="flex items-center gap-4">
+                    <div>
+                      <label className="text-sm text-purple-300 block mb-1">Trailing %</label>
+                      <input type="number" value={trailingStopLoss.percentage} onChange={(e) => setTrailingStopLoss({...trailingStopLoss, percentage: parseFloat(e.target.value)})} className="w-20 bg-purple-900/30 border border-purple-600/30 rounded px-2 py-1 text-purple-300 font-bold" />
+                    </div>
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={trailingStopLoss.enabled} onChange={(e) => setTrailingStopLoss({...trailingStopLoss, enabled: e.target.checked})} className="w-4 h-4" />
+                      <span className="text-sm text-purple-300">Enabled</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Active Trades with Trailing SL */}
+                <div className="space-y-4">
+                  {trailingStopLoss.activeTrades.map(trade => (
+                    <div key={trade.token} className="bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="font-bold text-purple-300">${trade.token}</h3>
+                          <p className="text-sm text-purple-300/60">Current: ${trade.price.toFixed(8)}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-emerald-400">{trade.gain}</div>
+                          <p className="text-xs text-purple-300/60">Profit</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 mb-4">
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Peak Price</p>
+                          <p className="font-bold text-purple-300">${trade.peakPrice.toFixed(8)}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Current SL</p>
+                          <p className="font-bold text-orange-400">${trade.trailingStop.toFixed(8)}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Distance</p>
+                          <p className="font-bold text-purple-300">{((trade.price - trade.trailingStop) / trade.trailingStop * 100).toFixed(1)}%</p>
+                        </div>
+                      </div>
+
+                      <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                        <div className="h-full bg-gradient-to-r from-emerald-500 to-orange-500" style={{width: '65%'}} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* MULTI-WALLET */}
+          {activeTab === 'wallet' && (
+            <div className="space-y-6">
+              <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-6">
+                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                  <Wallet className="w-6 h-6 text-cyan-400" />
+                  Multi-Wallet Management
+                </h2>
+
+                <div className="space-y-4">
+                  {multiWallet.wallets.map(wallet => (
+                    <div key={wallet.id} className={`bg-slate-900/50 rounded-lg p-4 border transition cursor-pointer ${multiWallet.selectedWallet === wallet.id ? 'border-purple-500 bg-purple-900/30' : 'border-purple-600/20 hover:border-purple-500/50'}`} onClick={() => setMultiWallet({...multiWallet, selectedWallet: wallet.id})}>
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <h3 className="font-bold text-purple-300">{wallet.name}</h3>
+                            {wallet.status === 'active' && <span className="w-2 h-2 bg-emerald-400 rounded-full" />}
+                          </div>
+                          <p className="text-xs text-purple-300/60 font-mono">{wallet.address}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-cyan-400">{wallet.balance} SOL</div>
+                          <p className="text-xs text-purple-300/60">{wallet.status}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-3 mb-3">
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Trades</p>
+                          <p className="font-bold text-purple-300">{wallet.trades}</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Allocation</p>
+                          <p className="font-bold text-purple-300">{wallet.allocation}%</p>
+                        </div>
+                        <div className="bg-slate-800/50 rounded p-2">
+                          <p className="text-xs text-purple-300/60">Value</p>
+                          <p className="font-bold text-cyan-400">${(wallet.balance * 125).toLocaleString()}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button className="flex-1 bg-purple-600/30 hover:bg-purple-600/50 px-3 py-2 rounded text-sm font-semibold text-purple-300 transition">
+                          {multiWallet.selectedWallet === wallet.id ? '✓ Selected' : 'Select'}
+                        </button>
+                        <button className="px-3 py-2 rounded text-sm font-semibold text-purple-300 border border-purple-600/30 hover:border-purple-500/50 transition">
+                          Manage
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Portfolio Summary */}
+                <div className="mt-8 bg-slate-900/50 rounded-lg p-4 border border-purple-600/20">
+                  <h3 className="font-bold text-purple-300 mb-4">📊 Portfolio Summary</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                      <p className="text-sm text-purple-300/60 mb-1">Total Balance</p>
+                      <p className="text-2xl font-bold text-cyan-400">{multiWallet.wallets.reduce((sum, w) => sum + w.balance, 0).toFixed(1)} SOL</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-purple-300/60 mb-1">Portfolio Value</p>
+                      <p className="text-2xl font-bold text-cyan-400">${(multiWallet.wallets.reduce((sum, w) => sum + w.balance, 0) * 125).toLocaleString()}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-purple-300/60 mb-1">Active Wallets</p>
+                      <p className="text-2xl font-bold text-emerald-400">{multiWallet.wallets.filter(w => w.status === 'active').length}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-purple-300/60 mb-1">Total Trades</p>
+                      <p className="text-2xl font-bold text-purple-300">{multiWallet.wallets.reduce((sum, w) => sum + w.trades, 0)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style jsx>{`
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;600;700&display=swap');
+        
+        * { font-family: 'Outfit', system-ui, -apple-system, sans-serif; }
+        h1, h2, h3 { font-family: 'Space Mono', monospace; }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        
+        input[type=number] { -moz-appearance: textfield; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(139, 92, 246, 0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.5); }
+      `}</style>
+    </div>
+  );
+}
